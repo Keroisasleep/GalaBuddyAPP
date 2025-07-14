@@ -85,10 +85,10 @@ class _ItemCardState extends State<ItemCard> {
                       ElevatedButton.icon(
                         onPressed: toggleVisited,
                         icon: Icon(
-                          isVisited ? Icons.undo : Icons.check,
+                          isVisited ? Icons.hourglass_empty : Icons.check,
                           color: Colors.white,
                         ),
-                        label: Text(isVisited ? "Mark as Pending" : "Mark as Visited"),
+                        label: Text(isVisited ? "Pending" : "Visited"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: isVisited ? Colors.orange : Colors.green,
                         ),
