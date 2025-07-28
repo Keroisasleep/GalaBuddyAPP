@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'Place.dart';
 
 class AddPlace extends StatefulWidget {
@@ -12,14 +13,20 @@ class _AddPlaceState extends State<AddPlace> {
   final _formKey = GlobalKey<FormState>();
   String _location = '';
   String _description = '';
-  String _imagePath = '';
+  bool _visited = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Place', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.teal[600],
+        title: Text(
+          'Add Place',
+          style: GoogleFonts.quicksand(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.indigoAccent,
         centerTitle: true,
       ),
       body: Padding(
@@ -28,7 +35,14 @@ class _AddPlaceState extends State<AddPlace> {
           key: _formKey,
           child: Column(
             children: [
-              const Text('Add a New Place', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              Text(
+                'Where should we go next?',
+                style: GoogleFonts.quicksand(
+                  fontSize: 18,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.indigo,
+                ),
+              ),
               const SizedBox(height: 20),
 
               TextFormField(
@@ -37,7 +51,9 @@ class _AddPlaceState extends State<AddPlace> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Please enter a location';
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a location';
+                  }
                   return null;
                 },
                 onChanged: (value) => _location = value,
@@ -53,28 +69,29 @@ class _AddPlaceState extends State<AddPlace> {
               ),
               const SizedBox(height: 15),
 
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Image Path (optional)',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) => _imagePath = value,
+              SwitchListTile(
+                title: const Text('Visited'),
+                value: _visited,
+                onChanged: (value) {
+                  setState(() => _visited = value);
+                },
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 15),
 
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.indigoAccent),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     final newPlace = Place(
                       location: _location,
                       description: _description,
-                      imagePath: _imagePath,
+                      visited: _visited,
+                      imagePath: '', // No image allowed during add
                     );
                     Navigator.pop(context, newPlace);
                   }
                 },
-                child: const Text('Save'),
+                child: const Text('Add', style: TextStyle(color: Colors.white)),
               )
             ],
           ),

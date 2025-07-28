@@ -7,7 +7,7 @@ class Place {
   Place({
     required this.location,
     required this.description,
-    this.visited = false,
+    required this.visited,
     required this.imagePath,
   });
 }
