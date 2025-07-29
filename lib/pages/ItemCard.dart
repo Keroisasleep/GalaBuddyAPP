@@ -1,5 +1,3 @@
-// itemcard.dart
-
 import 'package:flutter/material.dart';
 import 'Place.dart';
 import 'dart:io';
@@ -24,18 +22,10 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
   bool showActions = false;
-  late bool isVisited;
-
-  @override
-  void initState() {
-    super.initState();
-    isVisited = widget.place.visited;
-  }
 
   void _toggleVisitedStatus() {
-    if (!isVisited) {
+    if (!widget.place.visited) {
       setState(() {
-        isVisited = true;
         widget.place.visited = true;
         widget.place.visitedDate = DateTime.now();
       });
@@ -133,28 +123,35 @@ class _ItemCardState extends State<ItemCard> {
                     style: const TextStyle(color: Colors.black54)),
                 const SizedBox(height: 12),
 
-                /// DISABLE IF NO IMAGE
+                /// Toggle visited (disabled if no image)
                 GestureDetector(
-                  onTap: widget.place.imagePath.isEmpty ? null : _toggleVisitedStatus,
+                  onTap: widget.place.imagePath.isEmpty
+                      ? null
+                      : _toggleVisitedStatus,
                   child: Opacity(
                     opacity: widget.place.imagePath.isEmpty ? 0.5 : 1.0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: isVisited ? Colors.green : Colors.orange,
+                        color: widget.place.visited
+                            ? Colors.green
+                            : Colors.orange,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            isVisited ? Icons.check_circle : Icons.schedule,
+                            widget.place.visited
+                                ? Icons.check_circle
+                                : Icons.schedule,
                             color: Colors.white,
                             size: 16,
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            isVisited
+                            widget.place.visited
                                 ? 'Visited on ${formatDate(widget.place.visitedDate)}'
                                 : 'Pending',
                             style: const TextStyle(
@@ -192,7 +189,8 @@ class _ItemCardState extends State<ItemCard> {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text("Confirm Delete"),
-                    content: const Text("Are you sure you want to delete this place?"),
+                    content: const Text(
+                        "Are you sure you want to delete this place?"),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
