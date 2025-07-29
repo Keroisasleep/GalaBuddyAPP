@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'Place.dart';
 import 'ItemCard.dart';
 import 'AddPlace.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:galaapp/services/world_time.dart'; // ✅ Add this import
+import 'package:galaapp/services/world_time.dart';
 
 class ListItems extends StatefulWidget {
   const ListItems({super.key});
@@ -16,15 +17,23 @@ class ListItems extends StatefulWidget {
 class _ListItemsState extends State<ListItems> {
   List<Place> destinations = [
     Place(location: 'Kyoto, Japan', description: 'Temple hopping & culture.', visited: false, imagePath: ''),
-    Place(location: 'Paris, France', description: 'Eiffel Tower and cafes.', visited: true, imagePath: ''),
+    Place(location: 'Paris, France', description: 'Eiffel Tower and cafes.', visited: false, imagePath: ''),
   ];
 
   String _currentTime = 'Loading...';
+  Timer? _timeUpdateTimer;
 
   @override
   void initState() {
     super.initState();
     _loadTime();
+    _timeUpdateTimer = Timer.periodic(const Duration(seconds: 20), (_) => _loadTime());
+  }
+
+  @override
+  void dispose() {
+    _timeUpdateTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadTime() async {
@@ -40,10 +49,9 @@ class _ListItemsState extends State<ListItems> {
     });
   }
 
-
   void _addNewPlace(Place newPlace) {
     setState(() {
-      destinations.add(newPlace);
+      destinations.insert(0, newPlace);
     });
   }
 
@@ -171,7 +179,10 @@ class _ListItemsState extends State<ListItems> {
         backgroundColor: Colors.indigo,
         child: const Icon(Icons.add, color: Colors.white),
         onPressed: () async {
-          final newPlace = await Navigator.push(context, MaterialPageRoute(builder: (_) => const AddPlace()));
+          final newPlace = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddPlace()),
+          );
           if (newPlace != null) _addNewPlace(newPlace);
         },
       ),

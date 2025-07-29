@@ -13,7 +13,6 @@ class _AddPlaceState extends State<AddPlace> {
   final _formKey = GlobalKey<FormState>();
   String _location = '';
   String _description = '';
-  bool _visited = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,16 +66,7 @@ class _AddPlaceState extends State<AddPlace> {
                 ),
                 onChanged: (value) => _description = value,
               ),
-              const SizedBox(height: 15),
-
-              SwitchListTile(
-                title: const Text('Visited'),
-                value: _visited,
-                onChanged: (value) {
-                  setState(() => _visited = value);
-                },
-              ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 25),
 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.indigoAccent),
@@ -85,8 +75,8 @@ class _AddPlaceState extends State<AddPlace> {
                     final newPlace = Place(
                       location: _location,
                       description: _description,
-                      visited: _visited,
-                      imagePath: '', // No image allowed during add
+                      visited: false, // Always pending
+                      imagePath: '',  // No image on add
                     );
                     Navigator.pop(context, newPlace);
                   }

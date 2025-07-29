@@ -1,3 +1,5 @@
+// itemcard.dart
+
 import 'package:flutter/material.dart';
 import 'Place.dart';
 import 'dart:io';
@@ -31,10 +33,19 @@ class _ItemCardState extends State<ItemCard> {
   }
 
   void _toggleVisitedStatus() {
-    setState(() {
-      isVisited = !isVisited;
-      widget.place.visited = isVisited;
-    });
+    if (!isVisited) {
+      setState(() {
+        isVisited = true;
+        widget.place.visited = true;
+        widget.place.visitedDate = DateTime.now();
+      });
+    }
+  }
+
+  String formatDate(DateTime? date) {
+    if (date == null) return '';
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} '
+        '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
   }
 
   void _toggleActions() {
@@ -88,7 +99,7 @@ class _ItemCardState extends State<ItemCard> {
         children: [
           Container(
             width: double.infinity,
-            height: 300, // Portrait aspect ratio
+            height: 300,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
@@ -104,7 +115,8 @@ class _ItemCardState extends State<ItemCard> {
             ),
             child: widget.place.imagePath.isEmpty
                 ? const Center(
-              child: Icon(Icons.travel_explore, size: 48, color: Colors.grey),
+              child: Icon(Icons.travel_explore,
+                  size: 48, color: Colors.grey),
             )
                 : null,
           ),
@@ -114,36 +126,45 @@ class _ItemCardState extends State<ItemCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(widget.place.location,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text(widget.place.description,
                     style: const TextStyle(color: Colors.black54)),
                 const SizedBox(height: 12),
+
+                /// DISABLE IF NO IMAGE
                 GestureDetector(
-                  onTap: _toggleVisitedStatus,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: isVisited ? Colors.green : Colors.orange,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isVisited ? Icons.check_circle : Icons.schedule,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          isVisited ? 'Visited' : 'Pending',
-                          style: const TextStyle(
+                  onTap: widget.place.imagePath.isEmpty ? null : _toggleVisitedStatus,
+                  child: Opacity(
+                    opacity: widget.place.imagePath.isEmpty ? 0.5 : 1.0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isVisited ? Colors.green : Colors.orange,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isVisited ? Icons.check_circle : Icons.schedule,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            isVisited
+                                ? 'Visited on ${formatDate(widget.place.visitedDate)}'
+                                : 'Pending',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        ),
-                      ],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -178,7 +199,8 @@ class _ItemCardState extends State<ItemCard> {
                         child: const Text("Cancel"),
                       ),
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red),
                         onPressed: () => Navigator.of(context).pop(true),
                         child: const Text("Yes, Delete"),
                       ),
@@ -204,7 +226,8 @@ class _ItemCardState extends State<ItemCard> {
                       Icon(Icons.delete, color: Colors.red, size: 32),
                       SizedBox(height: 8),
                       Text('Delete',
-                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -222,37 +245,45 @@ class _ItemCardState extends State<ItemCard> {
                   context: context,
                   isScrollControlled: true,
                   shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(16)),
                   ),
                   builder: (context) {
-                    final locationController = TextEditingController(text: widget.place.location);
-                    final descriptionController = TextEditingController(text: widget.place.description);
+                    final locationController = TextEditingController(
+                        text: widget.place.location);
+                    final descriptionController = TextEditingController(
+                        text: widget.place.description);
 
                     return Padding(
                       padding: EdgeInsets.only(
                         left: 16,
                         right: 16,
                         top: 16,
-                        bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+                        bottom:
+                        MediaQuery.of(context).viewInsets.bottom + 16,
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text("Edit Place", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          const Text("Edit Place",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 16),
                           TextField(
                             controller: locationController,
-                            decoration: const InputDecoration(labelText: "Location"),
+                            decoration:
+                            const InputDecoration(labelText: "Location"),
                           ),
                           TextField(
                             controller: descriptionController,
-                            decoration: const InputDecoration(labelText: "Description"),
+                            decoration:
+                            const InputDecoration(labelText: "Description"),
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             onPressed: () async {
                               await _pickImageWithPermission((path) {
-                                imagePath = path; // Only local to modal
+                                imagePath = path;
                               });
                             },
                             icon: const Icon(Icons.photo),
@@ -266,6 +297,10 @@ class _ItemCardState extends State<ItemCard> {
                                   location: locationController.text,
                                   description: descriptionController.text,
                                   visited: widget.place.visited,
+                                  visitedDate: widget.place.visited
+                                      ? (widget.place.visitedDate ??
+                                      DateTime.now())
+                                      : null,
                                   imagePath: imagePath,
                                 ),
                               );
@@ -284,6 +319,8 @@ class _ItemCardState extends State<ItemCard> {
                     widget.place.location = updatedPlace.location;
                     widget.place.description = updatedPlace.description;
                     widget.place.imagePath = updatedPlace.imagePath;
+                    widget.place.visited = updatedPlace.visited;
+                    widget.place.visitedDate = updatedPlace.visitedDate;
                   });
                   widget.onEdit();
                 }
@@ -305,7 +342,10 @@ class _ItemCardState extends State<ItemCard> {
                     children: [
                       Icon(Icons.edit, color: Colors.blue, size: 32),
                       SizedBox(height: 8),
-                      Text('Edit', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+                      Text('Edit',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
