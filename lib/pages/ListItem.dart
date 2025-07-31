@@ -40,7 +40,7 @@ class _ListItemsState extends State<ListItems> {
     WorldTime instance = WorldTime(
       location: 'Manila',
       url: 'Asia/Manila',
-      flag: 'philippines.jpg',
+      flag: 'assets/philippines.jpg',
     );
     await instance.getTime();
 
@@ -85,12 +85,37 @@ class _ListItemsState extends State<ListItems> {
       body: Column(
         children: [
           const SizedBox(height: 20),
-          Text(
-            'Manila Time: $_currentTime',
-            style: GoogleFonts.quicksand(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.indigo,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Left: Date
+                Text(
+                  DateFormat('MM/dd/yyyy').format(DateTime.now()),
+                  style: GoogleFonts.quicksand(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+                // Center: "Manila"
+                Text(
+                  'Manila',
+                  style: GoogleFonts.quicksand(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo,
+                  ),
+                ),
+                // Right: Time
+                Text(
+                  _currentTime,
+                  style: GoogleFonts.quicksand(
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 10),
